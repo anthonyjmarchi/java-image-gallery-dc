@@ -6,19 +6,18 @@
 	</head>
 <body>
 	<h1>Admin</h1><br>
-	<form action="/viewUsers" method="GET">
-		<input type="submit" value="View Users">
-	</form><br>
 	<form action="/addUser" method="POST">
   		<label for="username">Username:</label><br>
   		<input type="text" id="username" name="username"><br>
   		<label for="password">Password:</label><br>
   		<input type="text" id="password" name="password"><br>
-		<label for="fullName">Full Name:</lavel><br>
+		<label for="fullName">Full Name:</label><br>
 		<input type="text" id="fullName" name="fullName"><br><br>
 		<input type="submit" value="Create User">
 	</form> 
-
+	        <form action="/viewUsers" method="GET">
+                <input type="submit" value="View Users">
+        </form><br>
 
 
 </body>

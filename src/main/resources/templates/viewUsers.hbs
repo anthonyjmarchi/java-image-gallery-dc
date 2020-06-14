@@ -6,8 +6,15 @@
 	</head>
 <body>
 	<h1>View Users</h1>
-
-
+	<ul>
+		{{#each users}}
+		<li><a href="www.google.com">{{this}}</a>
+			<form action="/deleteUserHelper" method "GET">
+				<input type="text" id="fullName" name="fullName" value="{{this}}"><br><br>
+				<input type="submit" value="Delete" >
+			</form>
+		{{/each}}
+	</ul>
 
 </body>
 </html>

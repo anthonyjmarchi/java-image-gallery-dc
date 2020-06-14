@@ -15,6 +15,7 @@ import spark.Request;
 import spark.Response;
 
 import java.util.Map;
+import java.util.ArrayList;
 import java.util.HashMap;
 
 import spark.ModelAndView;
@@ -48,17 +49,6 @@ public class DatabaseMethods {
             connection.close();
         }
 
-	private String getPassword() {
-            try(BufferedReader br = new BufferedReader(new FileReader("/home/ec2-user/.sql-passwd"))) {
-            String result = br.readLine();
-            br.close();
-            return result;
-            } catch (IOException ex) {
-                    System.err.println("Error opening password file. Make sure.sql-passwd exists");
-                    System.exit(1);
-            }
-            return null;
-        }
 
         public String addUser(Request req, Response resp) throws SQLException {
             
@@ -86,7 +76,55 @@ public class DatabaseMethods {
                 System.out.println(ex.getMessage());
                     }
                 db.close();
-                return "User: " + req.queryParams("fullNameAdd") + " has been added";
+                return "User: " + fullNameAdd + " has been added";
+        }
+
+        public String viewUsers(Request req, Response resp) throws SQLException {
+            Connection conn = connect();
+            PreparedStatement stmt = connection.prepareStatement("SELECT * FROM users");
+            ResultSet rs = stmt.executeQuery();
+            Map<String, Object> model = new HashMap<String, Object>();
+            ArrayList<String> nameArray= new ArrayList<String>();
+            while (rs.next()) {
+                nameArray.add(rs.getString(3));
+            }
+            model.put("users", nameArray);
+            rs.close();
+            return new HandlebarsTemplateEngine()
+                    .render(new ModelAndView(model, "viewUsers.hbs"));
+        }
+
+	public String deleteUserHelper(Request req, Response resp) throws SQLException {
+
+	    String fullNameIn = req.queryParams("fullName");
+     
+            String SQL = "DELETE FROM users WHERE full_name = '" + fullNameIn + "'";
+		
+	    DatabaseMethods db = new DatabaseMethods();
+            db.connect();
+
+            try (
+                Connection conn = connect();
+
+                PreparedStatement pstmt = conn.prepareStatement(SQL);) {
+                pstmt.executeUpdate();
+                } catch (SQLException ex) {
+                System.out.println(ex.getMessage());
+                }
+	    	db.close();
+        	return "User: " + fullNameIn + " has been deleted";
+	}
+
+        private String getPassword() {
+            try(BufferedReader br = new BufferedReader(new FileReader("/home/ec2-user/.sql-passwd"))) {
+            String result = br.readLine();
+            br.close();
+            return result;
+            } catch (IOException ex) {
+                    System.err.println("Error opening password file. Make sure.sql-passwd exists");
+                    System.exit(1);
+            }
+            return null;
         }
 
         public String admin(Request req, Response resp) {
@@ -103,10 +141,10 @@ public class DatabaseMethods {
 
                 get("/admin", (req, res) -> admin(req, res));
 
-                get("/viewUsers", (req, res) -> {
-                        Map<String, Object> model = new HashMap<String, Object>();
-                        return new HandlebarsTemplateEngine()
-                                .render(new ModelAndView(model, "viewUsers.hbs"));
-                });
+                get("/viewUsers", (req, res) -> viewUsers(req, res)); 
+
+                get("/deleteUserHelper", (req, res) -> deleteUserHelper(req, res));
+
         }
 }
+     
