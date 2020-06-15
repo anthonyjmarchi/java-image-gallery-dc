@@ -8,11 +8,12 @@
 	<h1>View Users</h1>
 	<ul>
 		{{#each users}}
-		<li><a href="www.google.com">{{this}}</a>
-			<form action="/deleteUserHelper" method "GET">
+		<li><a href="/editUser/{{this}}">{{this}}</a>
+			<form action="/editGet" method "GET">
 				<input type="text" id="fullName" name="fullName" value="{{this}}"><br><br>
 				<input type="submit" value="Delete" >
 			</form>
+		</li>
 		{{/each}}
 	</ul>
 

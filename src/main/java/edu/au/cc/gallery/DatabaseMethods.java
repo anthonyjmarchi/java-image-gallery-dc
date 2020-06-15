@@ -26,7 +26,8 @@ public class DatabaseMethods {
         String username = "";
         String password = "";
         String fullName = "";
-        
+        String fullNameToUpdate = "";
+
         private static final String dbUrl = "jdbc:postgresql://image-gallery.cm6ntogsarqg.us-east-1.rds.amazonaws.com/";
 
         private Connection connection;
@@ -115,6 +116,35 @@ public class DatabaseMethods {
         	return "User: " + fullNameIn + " has been deleted";
 	}
 
+	 public String editGet(Request req, Response resp) throws SQLException {
+            fullNameToUpdate = req.params(":fullName");
+	    return new HandlebarsTemplateEngine().render(new ModelAndView(fullNameToUpdate, "editUsers.hbs"));
+	 }
+
+        public String editPost(Request req, Response resp) throws SQLException {
+		
+	    DatabaseMethods db = new DatabaseMethods();
+            db.connect();
+
+            String usernameUpdate= req.queryParams("username");
+            String passwordUpdate = req.queryParams("password");
+            String fullNameUpdate = req.queryParams("fullName");
+            
+            String SQL = "UPDATE users SET username = '" + usernameUpdate + "', password = '" + passwordUpdate
+            + "', full_name = '" + fullNameUpdate + "' WHERE username = '" + fullNameUpdate + "'";
+
+            try (
+                  Connection conn = connect();
+                  PreparedStatement pstmt = conn.prepareStatement(SQL);) {
+            int affectedRows = pstmt.executeUpdate();
+            } catch (SQLException ex) {
+            System.out.println(ex.getMessage());
+            }
+            db.close();
+	    return "User: " + fullNameToUpdate + " has been updated";
+        }
+
+
         private String getPassword() {
             try(BufferedReader br = new BufferedReader(new FileReader("/home/ec2-user/.sql-passwd"))) {
             String result = br.readLine();
@@ -145,6 +175,9 @@ public class DatabaseMethods {
 
                 get("/deleteUserHelper", (req, res) -> deleteUserHelper(req, res));
 
-        }
+		get("/editGet/:fullName", (req, res) -> editGet(req, res));
+        	
+		post("/editPost", (req, res) -> editPost(req, res));
+	}
 }
      
