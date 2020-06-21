@@ -9,8 +9,8 @@ su ec2-user -l -c 'curl -s "https://get.sdkman.io" | bash && source .bashrc && s
 
 # Configure/install custom software
 cd /home/ec2-user
-git clone https://github.com/anthonyjmarchi/java_image_gallery_m3.git
-chown -R ec2-user:ec2-user java-image_gallery_m3
+git clone https://github.com/anthonyjmarchi/java-image-gallery-dc.git
+chown -R ec2-user:ec2-user java-image-gallery-dc
 
 CONFIG_BUCKET="s3://edu.au.cc.image-gallery-config-dc"
 aws s3 cp ${CONFIG_BUCKET}/nginx/nginx.conf /etc/nginx/nginx.conf
@@ -22,4 +22,4 @@ systemctl disable postfix
 systemctl start nginx
 systemctl enable nginx
 
-su ec2-user -l -c 'cd ~/java-image-gallery && ./start' >/var/log/image_gallery.log 2>&1 &
+su ec2-user -l -c 'cd ~/java-image-gallery-dc && ./start' >/var/log/image_gallery.log 2>&1 &
