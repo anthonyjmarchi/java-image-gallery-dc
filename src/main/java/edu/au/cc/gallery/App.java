@@ -14,7 +14,7 @@ public class App {
         return "Hello world.";
     }
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws Exception {
 	String portString = System.getenv("JETTY_PORT");
 	if (portString == null || portString.equals(""))
 	    port(5000);
@@ -25,3 +25,4 @@ public class App {
     	new DatabaseMethods().addRoutes();
     }
 }
+

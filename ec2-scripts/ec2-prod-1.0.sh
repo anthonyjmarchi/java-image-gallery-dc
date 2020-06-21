@@ -9,10 +9,10 @@ su ec2-user -l -c 'curl -s "https://get.sdkman.io" | bash && source .bashrc && s
 
 # Configure/install custom software
 cd /home/ec2-user
-git clone 
+git clone https://github.com/anthonyjmarchi/java_image_gallery_m3.git
 chown -R ec2-user:ec2-user java-image-gallery
 
-CONFIG_BUCKET="s3://edu.au.cc.image-gallery-config"
+CONFIG_BUCKET="s3://edu.au.cc.image-gallery-config-dc"
 aws s3 cp ${CONFIG_BUCKET}/nginx/nginx.conf /etc/nginx/nginx.conf
 aws s3 cp ${CONFIG_BUCKET}/nginx/default.d/image_gallery.conf /etc/nginx/default.d/image_gallery.conf
 
