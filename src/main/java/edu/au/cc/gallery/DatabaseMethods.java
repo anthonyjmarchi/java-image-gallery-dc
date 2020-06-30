@@ -163,6 +163,25 @@ public class DatabaseMethods {
                                 .render(new ModelAndView(model, "admin.hbs"));
         }
 
+	private String login(Request req, Response resp) {
+		Map<String, Object> model = new HashMap<String, Object>();
+		return new HandlebarsTemplateEngine()
+			.render(new ModelAndView(model, "login.hbs"));
+	}
+
+        private String loginPost(Request req, Response resp) {
+        	
+
+	}
+
+	private String debugSession(Request req, Response resp) {
+		StringBuffer sb = new StringBuffer();
+		for(String key: req.session().attributes()) {
+			sb.append(key+"->"+req.session().attribute(key)+"<br />");
+		}
+		return sb.toString();
+	}	
+
         public void addRoutes() {
 
                 get("/hello", (req, res) -> "Hello World");
@@ -178,6 +197,12 @@ public class DatabaseMethods {
 		get("/editGet/:fullName", (req, res) -> editGet(req, res));
         	
 		post("/editPost", (req, res) -> editPost(req, res));
+
+		get("/login", (req, res) -> login(req, res));
+	
+		post("/login", (req,res) -> loginPost(req, res));
+
+		get("/debugSession", (req, res) -> debugSession(req, res));
 	}
 }
      
