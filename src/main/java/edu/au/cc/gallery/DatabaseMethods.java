@@ -50,6 +50,18 @@ public class DatabaseMethods {
             connection.close();
         }
 
+	public ResultSet execute(String query) throws SQLException {
+		PreparedStatement stmt = connection.prepareStatement(query);
+		ResultSet rs = stmt.executeQuery();
+		return rs;
+	}
+
+	public void execute(String query, String[] values) throws SQLException {
+	 	PreparedStatement stmt = connection.prepareStatement(query);
+		for(int i=0; i < values.length; i++)
+			stmt.setString(i+1, values[i]);
+		stmt.execute();
+	}
 
         public String addUser(Request req, Response resp) throws SQLException {
             
@@ -169,10 +181,11 @@ public class DatabaseMethods {
 			.render(new ModelAndView(model, "login.hbs"));
 	}
 
-        private String loginPost(Request req, Response resp) {
-        	
+       /** private String loginPost(Request req, Response resp) {
+        	User u = getUsernameDAO();
 
 	}
+	**/
 
 	private String debugSession(Request req, Response resp) {
 		StringBuffer sb = new StringBuffer();
@@ -181,6 +194,9 @@ public class DatabaseMethods {
 		}
 		return sb.toString();
 	}	
+
+
+
 
         public void addRoutes() {
 
@@ -200,7 +216,7 @@ public class DatabaseMethods {
 
 		get("/login", (req, res) -> login(req, res));
 	
-		post("/login", (req,res) -> loginPost(req, res));
+	//	post("/login", (req,res) -> loginPost(req, res));
 
 		get("/debugSession", (req, res) -> debugSession(req, res));
 	}

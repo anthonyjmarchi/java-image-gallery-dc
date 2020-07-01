@@ -10,9 +10,23 @@ import spark.ModelAndView;
 import spark.template.handlebars.HandlebarsTemplateEngine;
 
 public class App {
+
     public String getGreeting() {
         return "Hello world.";
     }
+
+    private static String listUsers() {
+      	try {     
+	    StringBuffer sb = new StringBuffer();
+            UserDAO dao = Postgres.getUserDAO();
+            for(User u: dao.getUsers()) 
+	        sb.append(u.toString());
+	    return sb.toString();
+	} catch (Exception e) {
+		return "Error: " + e.getMessage();	
+	}
+    }
+
 
     public static void main(String[] args) throws Exception {
 	String portString = System.getenv("JETTY_PORT");
@@ -23,6 +37,9 @@ public class App {
         get("/hello", (req, res) -> "Hello World");
 	
     	new DatabaseMethods().addRoutes();
+    
+    	get("/users", (req, res) -> listUsers());
+    
     }
 }
 
